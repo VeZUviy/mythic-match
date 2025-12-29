@@ -1,0 +1,40 @@
+name: 2. Build Android APK
+on:
+  workflow_dispatch: # Запуск кнопкою вручну
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    - run: npm install -g cordova
+    - run: |
+        # Створюємо проект
+        cordova create mygame com.wonderrun.mythic "Mythic Match"
+        
+        # Чистимо папку www
+        rm -rf mygame/www/*
+        
+        # Копіюємо ТВОЇ файли (код, картинки, звук) в проект
+        # exclude потрібен, щоб не копіювати сам проект в себе
+        rsync -av --exclude='mygame' --exclude='.git' --exclude='.github' . mygame/www/
+        
+        # Якщо є іконка - ставимо
+        if [ -f "icon.png" ]; then cp icon.png mygame/www/icon.png; fi
+        
+        cd mygame
+        cordova platform add android
+        cordova build android --release --no-telemetry
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Mythic-Match-APK
+        path: mygame/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
