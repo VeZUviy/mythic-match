@@ -1,0 +1,41 @@
+name: 1. Unzip Files
+
+on:
+  push:
+    paths:
+      - '**.zip' # Запускається, коли бачить zip
+  workflow_dispatch: # Додає кнопку для ручного запуску
+
+permissions:
+  contents: write
+
+jobs:
+  unzip_all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Unzip Archives
+        run: |
+          # Налаштовуємо Git
+          git config --global user.name "Auto Bot"
+          git config --global user.email "bot@github.com"
+          
+          # Шукаємо всі zip і розпаковуємо
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              echo "Розпаковую $file..."
+              unzip -o "$file" -d .
+              rm "$file"
+            fi
+          done
+          
+          # Зберігаємо зміни (видаляємо архіви, лишаємо папки)
+          git add .
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "📂 Файли розпаковано успішно"
+            git push
+          else
+            echo "Нічого нового не розпаковано."
+          fi
