@@ -1,0 +1,57 @@
+name: 3. Fix Directories
+
+on:
+  workflow_dispatch: # Запуск вручну кнопкою
+
+permissions:
+  contents: write
+
+jobs:
+  organize_files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Move files to Root
+        run: |
+          # Налаштовуємо Git
+          git config --global user.name "Fix Bot"
+          git config --global user.email "bot@github.com"
+
+          # 1. Шукаємо і витягуємо код (index.html, js, css)
+          # Знаходимо файл index.html, який лежить не в корені
+          find . -mindepth 2 -name "index.html" | while read filepath; do
+            dir=$(dirname "$filepath")
+            echo "Знайдено гру в папці: $dir. Переміщую..."
+            mv "$dir"/* .
+            # Якщо папка стала пустою - видаляємо
+            rmdir "$dir" || true
+          done
+
+          # 2. Шукаємо і витягуємо папку fone
+          # Якщо fone лежить десь глибоко, переміщуємо її вміст у правильну папку fone
+          mkdir -p fone
+          find . -mindepth 2 -type d -name "fone" | while read dir; do
+             echo "Знайдено картинки в: $dir. Об'єдную..."
+             cp -r "$dir"/* fone/
+             rm -rf "$dir"
+          done
+
+          # 3. Шукаємо і витягуємо папку sounds
+          mkdir -p sounds
+          find . -mindepth 2 -type d -name "sounds" | while read dir; do
+             echo "Знайдено музику в: $dir. Об'єдную..."
+             cp -r "$dir"/* sounds/
+             rm -rf "$dir"
+          done
+
+          # 4. Зберігаємо порядок
+          git add .
+          
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "🧹 Структура папок виправлена автоматично"
+            git push
+          else
+            echo "Все вже стоїть правильно!"
+          fi
