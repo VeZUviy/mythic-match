@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Мандри Чудес">
+    
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+Mуthic Match</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="bg-layer"></div>
+
+    <div id="start-screen">
+        <div class="title-block">
+            <h1>Мандри Чудес</h1>
+            <p>Хроніки Загубленого Світу</p>
+        </div>
+        <button id="start-btn">Почати подорож</button>
+        <button id="reset-btn" class="secondary-btn">🔄 Скинути прогрес</button>
+    </div>
+
+    <div id="story-modal" class="hidden">
+        <div class="modal-content">
+            <h2 id="story-title">Розділ</h2>
+            <div class="story-text-container">
+                <p id="story-text">...</p>
+            </div>
+            <div class="modal-footer">
+                <div class="goal-box">
+                    <span id="goal-icon">🎯</span> 
+                    <span id="level-goal-text">Ціль: ...</span>
+                </div>
+                <button id="next-level-btn">До бою!</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="win-modal" class="hidden">
+        <div class="modal-content">
+            <h2>Перемога!</h2>
+            <p>Рівень пройдено.</p>
+            <button id="claim-btn">Наступний рівень</button>
+        </div>
+    </div>
+
+    <div id="game-ui" class="hidden">
+        <div class="header">
+            <div class="score-box"><span id="score-label">Очки:</span> <span id="score">0</span> / <span id="target-score">0</span></div>
+            <div class="level-box">Рівень: <span id="current-level-display">1</span></div>
+        </div>
+        <div id="status-message"></div>
+        <div class="game-container">
+            <div id="grid" class="grid"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
+
